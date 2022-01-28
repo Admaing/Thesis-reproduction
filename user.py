@@ -1,15 +1,19 @@
 #! usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from glob import glob1
+from telnetlib import EL
+from xml.dom.minidom import Element
 from pypbc import *
+import hashlib
 # from BloomFilter import *
 # from TimeCount import *
 
 #   system params generation
 #   q_1 * q_2 = n, n is the order of the group
 
-q_1 = get_random_prime(60)
-q_2 = get_random_prime(60)
+q_1 = get_random_prime(160)
+q_2 = get_random_prime(160)
 
 
 params = Parameters( n = q_1 * q_2 )    #   使用的是pbc中的a1_param参数，详见pbc_manul手册中的说明
@@ -31,13 +35,43 @@ u = Element.random( pairing, G1 ) #全局常量
 # PB = Element( pairing, GT, value = PB ** q_1 )
 
 # #   哈希就在这凑合一下吧，是那么个意思，对效率的影响不大，等以后有时间了再加进来吧。
-hash1 = Element.from_hash( pairing, Zr, "hashof ki + cs")
-hash2 =  Element.from_hash( pairing, Zr, "hashof ki + cs")
-h =  Element.from_hash( pairing, G1, "hashof ki + cs")
+hash1 = hashlib.sha256
+hash2 =  hashlib.sha256
+h =  hashlib.sha256
 
 x = Element.random( pairing, G1 )  #用户uj选择随机数Xj
 #使用随机数计算私钥
-Xj = x * 
+  
+# Tj是啥玩意     每个用户的管理属性Tj定义为32bit
+
+
+
+def KeyGen(j):
+
+    for i in j:
+
+        Tj = "12333333333333333333333333333123123123123123113123"
+        Xj = x * h(int(Tj)) #私钥
+        Yj = Element( paring, G1, value = g**Xj)    #公钥
+
+        tj = Element(paring, G1, value = Tj+Tj**Xj)
+
+
+
+def SigGen(name, F,X,Y):
+    mi = F
+    mi = Element.random( pairing, Zr)
+    TagF = hash(mi) #出问题
+    id = name+1+hash2(mi+1)
+    u_m = Element(paring, G1, value=u**mi)
+    tao = Element(paring, G1, value=(hash1(id)*u_m)**X)
+
+    return F,TagF, tao
+
+def ReKeygen(X,Y):
+    return Elment(paring, G1, value = Y**(1/X))
+
+def ReSiggen(k)
 
 # #   构造布隆过滤器，这个可是费老劲了！
 # Delta_d = 20
