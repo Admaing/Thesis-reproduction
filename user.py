@@ -71,7 +71,10 @@ def SigGen(name, F,X,Y):
 def ReKeygen(X,Y):
     return Elment(paring, G1, value = Y**(1/X))
 
-def ReSiggen(k)
+# def ReSiggen(k)
+if __name__ == "__main__":
+    
+
 
 # #   构造布隆过滤器，这个可是费老劲了！
 # Delta_d = 20
